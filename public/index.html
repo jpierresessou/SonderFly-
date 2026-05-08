@@ -9,992 +9,193 @@
     <link rel="manifest" href="/manifest.json">
     <title>SonderFly</title>
     <style>
-        :root {
-            --bg: #0D0D1A;
-            --bg-light: #1a1a35;
-            --violet: #6D28D9;
-            --violet-light: #8B5CF6;
-            --violet-blue: #5B4FCF;
-            --red: #e53935;
-            --text: #e0e0e0;
-            --green: #4ade80;
-            --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        }
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: var(--font-body);
-            background: #000;
-            color: var(--text);
-            height: 100vh;
-            height: 100dvh;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-        }
-        .app-container {
-            width: 100%;
-            max-width: 430px;
-            height: 100vh;
-            height: 100dvh;
-            position: relative;
-            overflow: hidden;
-            background: #0a0a0a;
-        }
-        .slideshow-full {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
-        .slideshow-full .slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-            opacity: 0;
-            transition: opacity 1.5s;
-        }
-        .slideshow-full .slide.active {
-            opacity: 1;
-        }
-        .slideshow-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.55);
-            z-index: 2;
-            pointer-events: none;
-        }
-        .brand {
-            font-family: 'Arial Black', 'Impact', sans-serif;
-            font-size: 38px;
-            color: #fff;
-            text-shadow: 0 0 25px rgba(139, 92, 246, 0.6);
-            letter-spacing: 3px;
-            position: absolute;
-            top: 16px;
-            left: 20px;
-            z-index: 25;
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .brand.move-down {
-            top: 50% !important;
-            left: 50% !important;
-            transform: translate(-50%, -50%) !important;
-            margin-top: -170px;
-            font-size: 52px;
-            text-align: center;
-        }
-        .brand .sonder {
-            font-weight: 900;
-        }
-        .brand .fly {
-            font-weight: 400;
-        }
-        .lang-flags {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            gap: 10px;
-            z-index: 20;
-        }
-        .lang-flag {
-            width: 36px;
-            height: 24px;
-            border-radius: 4px;
-            cursor: pointer;
-            opacity: 0.6;
-            border: 2px solid transparent;
-            font-size: 22px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .lang-flag.active-lang {
-            opacity: 1;
-            border-color: #fff;
-        }
-        .tagline-container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 15;
-            width: 90%;
-            text-align: center;
-            pointer-events: none;
-            transition: opacity 0.5s;
-        }
-        .tagline-container.hide {
-            opacity: 0;
-        }
-        .tagline-word {
-            display: block;
-            font-family: 'Arlon', 'Impact', 'Arial Black', sans-serif;
-            font-weight: 900;
-            font-size: 40px;
-            color: #fff;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px rgba(139, 92, 246, 0.6), 3px 3px 8px rgba(0, 0, 0, 0.8);
-            letter-spacing: 5px;
-            line-height: 1.4;
-            opacity: 1;
-        }
-        .tagline-word.line1 {
-            animation: slideLeft 6s ease-in-out infinite;
-        }
-        .tagline-word.line2 {
-            animation: slideRight 6s ease-in-out infinite;
-        }
-        .tagline-word.line3 {
-            animation: slideLeft 6s ease-in-out infinite;
-        }
-        @keyframes slideLeft {
-            0%,
-            100% {
-                opacity: 0;
-                transform: translateX(-100px);
-            }
-            12% {
-                opacity: 1;
-                transform: translateX(0);
-            }
-            70% {
-                opacity: 1;
-                transform: translateX(0);
-            }
-            82% {
-                opacity: 0;
-                transform: translateX(0);
-            }
-        }
-        @keyframes slideRight {
-            0%,
-            100% {
-                opacity: 0;
-                transform: translateX(100px);
-            }
-            12% {
-                opacity: 1;
-                transform: translateX(0);
-            }
-            70% {
-                opacity: 1;
-                transform: translateX(0);
-            }
-            82% {
-                opacity: 0;
-                transform: translateX(0);
-            }
-        }
-        .content-overlay {
-            position: absolute;
-            bottom: 30px;
-            left: 0;
-            width: 100%;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 0 20px;
-        }
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 24px;
-            padding: 20px;
-            width: 100%;
-            max-width: 360px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            overflow: hidden;
-            max-height: 280px;
-            transition: all 0.5s;
-        }
-        .glass-panel.expand {
-            max-width: 100%;
-            max-height: 480px;
-            overflow-y: auto;
-        }
-        .panel-section {
-            transition: all 0.4s;
-        }
-        .panel-section.hide {
-            opacity: 0;
-            transform: translateY(5px);
-            pointer-events: none;
-            max-height: 0;
-            overflow: hidden;
-            margin: 0;
-            padding: 0;
-        }
-        .greeting-row {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            min-height: 28px;
-        }
-        .greeting-row.hide {
-            opacity: 0;
-            max-height: 0;
-            overflow: hidden;
-        }
-        .greeting-word {
-            font-size: 17px;
-            font-style: italic;
-            color: #fff;
-            text-shadow: 0 0 15px #fff;
-        }
-        .btn {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            border-radius: 14px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: center;
-            font-family: inherit;
-            border: none;
-        }
-        .btn.primary {
-            background: var(--violet);
-            color: #fff;
-        }
-        .btn.secondary {
-            background: rgba(255, 255, 255, 0.12);
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.25);
-        }
-        .btn.danger {
-            background: rgba(229, 57, 53, 0.3);
-            backdrop-filter: blur(10px);
-            color: #fff;
-            border: 1px solid rgba(229, 57, 53, 0.4);
-        }
-        .field {
-            margin-bottom: 10px;
-        }
-        .field label {
-            display: block;
-            font-size: 10px;
-            color: #ccc;
-            margin-bottom: 3px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-        .field input {
-            width: 100%;
-            padding: 12px 14px;
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            border-radius: 12px;
-            color: #fff;
-            font-size: 14px;
-            font-family: inherit;
-        }
-        .btn-back-panel {
-            font-size: 12px;
-            color: #bbb;
-            text-align: center;
-            cursor: pointer;
-            text-decoration: underline;
-        }
-        .page {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-light);
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            z-index: 5;
-            transition: transform 0.4s;
-        }
-        .page.active {
-            transform: translateX(0);
-            z-index: 15;
-        }
-        .page.hidden-right {
-            transform: translateX(105%);
-            pointer-events: none;
-        }
-        .page.hidden-left {
-            transform: translateX(-105%);
-            pointer-events: none;
-        }
-        .top-header {
-            background: var(--violet);
-            padding: 14px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .top-header .site-name {
-            color: #fff;
-            font-family: 'Arial Black', 'Impact', sans-serif;
-            font-size: 18px;
-        }
-        .top-header .profile-thumb {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            overflow: hidden;
-            border: 2px solid rgba(255, 255, 255, 0.5);
-            font-size: 16px;
-            color: #fff;
-            font-weight: 700;
-        }
-        .top-header .profile-thumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .search-bar {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.06);
-            border-radius: 12px;
-            padding: 8px 12px;
-            margin-bottom: 12px;
-        }
-        .search-bar input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: #fff;
-            font-size: 14px;
-            font-family: inherit;
-            outline: none;
-            padding: 4px;
-        }
-        .add-contact-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            color: #fff;
-            font-size: 22px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        .contacts-list {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            flex: 1;
-        }
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 12px;
-            cursor: pointer;
-        }
-        .contact-avatar {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: var(--violet);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 18px;
-            font-weight: 700;
-            flex-shrink: 0;
-        }
-        .contact-name {
-            color: #fff;
-            font-weight: 500;
-            font-size: 15px;
-        }
-        .delete-account-btn {
-            text-align: center;
-            padding: 16px 0;
-            cursor: pointer;
-            color: #e53935;
-            font-size: 13px;
-        }
-        .chat-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding-bottom: 14px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 8px;
-        }
-        .back-arrow {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 18px;
-            cursor: pointer;
-        }
-        .msg-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 8px 0;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        .bubble {
-            max-width: 78%;
-            padding: 8px 12px;
-            border-radius: 16px;
-            font-size: 13px;
-            line-height: 1.4;
-        }
-        .bubble.other {
-            background: #fff;
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
-            color: var(--violet-blue);
-        }
-        .bubble.me {
-            background: var(--violet-blue);
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
-            color: #fff;
-        }
-        .chat-input-zone {
-            display: flex;
-            gap: 6px;
-            padding: 6px 10px;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 26px;
-            min-height: 44px;
-        }
-        .chat-input-zone input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: #fff;
-            font-size: 14px;
-            font-family: inherit;
-            outline: none;
-        }
-        .icon-btn {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: transparent;
-            color: #fff;
-            font-size: 22px;
-            flex-shrink: 0;
-        }
-        .icon-btn.send-btn {
-            background: var(--violet);
-            width: 38px;
-            height: 38px;
-        }
-        .icon-btn.voice-btn {
-            width: 46px;
-            height: 46px;
-            background: var(--red);
-        }
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-        .overlay.show {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        .overlay-panel {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 24px;
-            padding: 20px;
-            width: 90%;
-            max-width: 360px;
-            max-height: 80vh;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .toast {
-            position: fixed;
-            bottom: 60px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 11px;
-            z-index: 200;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-        .toast.show {
-            opacity: 1;
-        }
-        input[type="file"] {
-            display: none;
-        }
+        :root{--bg:#0D0D1A;--violet:#6D28D9;--violet-light:#8B5CF6;--violet-blue:#5B4FCF;--red:#e53935;--text:#e0e0e0;--green:#4ade80;--font-body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:var(--font-body);background:#000;color:var(--text);height:100vh;height:100dvh;overflow:hidden;display:flex;justify-content:center;align-items:center;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none}
+        .app-container{width:100%;max-width:430px;height:100vh;height:100dvh;position:relative;overflow:hidden;background:#0a0a0a}
+        .slideshow-full{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1}
+        .slideshow-full .slide{position:absolute;top:0;left:0;width:100%;height:100%;background-size:cover;background-position:center;opacity:0;transition:opacity 1.5s}
+        .slideshow-full .slide.active{opacity:1}
+        .slideshow-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);z-index:2}
+        .floating-bubbles{position:absolute;top:0;left:0;width:100%;height:100%;z-index:3;pointer-events:none;overflow:hidden}
+        .float-bubble{position:absolute;background:rgba(139,92,246,0.12);border-radius:50%;animation:floatUp 8s ease-in infinite}
+        @keyframes floatUp{0%{transform:translateY(100vh) scale(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-100px) scale(1.5);opacity:0}}
+        .brand{font-family:'Arial Black','Impact',sans-serif;font-size:38px;color:#fff;text-shadow:0 0 25px rgba(139,92,246,0.6);letter-spacing:3px;position:absolute;top:16px;left:20px;z-index:25;transition:all 0.6s}
+        .brand.move-down{top:50%!important;left:50%!important;transform:translate(-50%,-50%)!important;margin-top:-210px;font-size:52px;text-align:center}
+        .brand .sonder{font-weight:900}.brand .fly{font-weight:400}
+        .lang-flags{position:absolute;top:20px;right:20px;display:flex;gap:10px;z-index:20}
+        .lang-flag{width:36px;height:24px;border-radius:4px;cursor:pointer;opacity:0.6;border:2px solid transparent;font-size:22px;display:flex;align-items:center;justify-content:center}
+        .lang-flag.active-lang{opacity:1;border-color:#fff}
+        .tagline-container{position:absolute;top:55%;left:50%;transform:translate(-50%,-50%);z-index:15;width:90%;text-align:center;pointer-events:none;transition:opacity 0.5s}
+        .tagline-container.hide{opacity:0}
+        .tagline-word{display:block;font-family:'Impact','Arial Black',sans-serif;font-weight:900;font-size:32px;color:#fff;text-shadow:0 0 20px rgba(255,255,255,0.8),3px 3px 8px rgba(0,0,0,0.8);letter-spacing:5px;line-height:1.4}
+        .tagline-word.line1{animation:slideLeft 6s ease-in-out infinite}
+        .tagline-word.line2{animation:slideRight 6s ease-in-out infinite}
+        .tagline-word.line3{animation:slideLeft 6s ease-in-out infinite}
+        @keyframes slideLeft{0%,100%{opacity:0;transform:translateX(-100px)}15%{opacity:1;transform:translateX(0)}70%{opacity:1;transform:translateX(0)}85%{opacity:0;transform:translateX(0)}}
+        @keyframes slideRight{0%,100%{opacity:0;transform:translateX(100px)}15%{opacity:1;transform:translateX(0)}70%{opacity:1;transform:translateX(0)}85%{opacity:0;transform:translateX(0)}}
+        .content-overlay{position:absolute;bottom:30px;left:0;width:100%;z-index:10;display:flex;flex-direction:column;align-items:center;padding:0 20px}
+        .glass-panel{background:rgba(255,255,255,0.1);backdrop-filter:blur(25px);-webkit-backdrop-filter:blur(25px);border:1px solid rgba(255,255,255,0.2);border-radius:24px;padding:24px 20px;width:100%;max-width:360px;display:flex;flex-direction:column;gap:18px;overflow:hidden;max-height:260px;transition:all 0.5s}
+        .glass-panel.expand{max-width:100%;max-height:500px;overflow-y:auto;gap:20px}
+        .panel-section{transition:all 0.4s}.panel-section.hide{opacity:0;transform:translateY(5px);pointer-events:none;max-height:0;overflow:hidden;margin:0;padding:0}
+        .btn{display:block;width:100%;padding:16px;border-radius:14px;font-size:14px;font-weight:600;cursor:pointer;text-align:center;font-family:inherit;border:none}
+        .btn.primary{background:var(--violet);color:#fff}.btn.secondary{background:rgba(255,255,255,0.12);color:#fff;border:1px solid rgba(255,255,255,0.25)}.btn.danger{background:rgba(229,57,53,0.3);backdrop-filter:blur(10px);color:#fff;border:1px solid rgba(229,57,53,0.4)}
+        .phone-row{display:flex;align-items:center;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.18);border-radius:12px;overflow:hidden;position:relative}
+        .country-select{display:flex;align-items:center;gap:6px;padding:14px 12px;background:transparent;border:none;color:#fff;font-size:14px;cursor:pointer;border-right:1px solid rgba(255,255,255,0.15);white-space:nowrap;font-family:inherit}
+        .phone-row input{flex:1;padding:14px 12px;background:transparent;border:none;color:#fff;font-size:14px;font-family:inherit;outline:none}
+        .country-dropdown{position:absolute;top:52px;left:0;width:100%;max-height:220px;overflow-y:auto;background:#1a1a35;border:1px solid rgba(255,255,255,0.2);border-radius:12px;z-index:60;display:none}
+        .country-dropdown.show{display:block}
+        .country-option{padding:10px 12px;cursor:pointer;color:#fff;font-size:13px;display:flex;align-items:center;gap:8px}
+        .country-option:active{background:rgba(255,255,255,0.1)}
+        .checkbox-row{display:flex;align-items:center;gap:10px;color:#ccc;font-size:12px;padding:4px 0}
+        .checkbox-row input{width:20px;height:20px}
+        .profile-preview-reg{width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,0.1);margin:0 auto;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;font-size:35px;color:rgba(255,255,255,0.5);border:2px solid rgba(255,255,255,0.2)}
+        .profile-preview-reg img{width:100%;height:100%;object-fit:cover}
+        .btn-back-panel{font-size:13px;color:#bbb;text-align:center;cursor:pointer;text-decoration:underline;padding:6px 0}
+        .page{position:absolute;top:0;left:0;width:100%;height:100%;background:#1a1a35;display:flex;flex-direction:column;overflow-y:auto;z-index:5;transition:transform 0.4s}
+        .page.active{transform:translateX(0);z-index:15}.page.hidden-right{transform:translateX(105%);pointer-events:none}.page.hidden-left{transform:translateX(-105%);pointer-events:none}
+        .top-header{background:var(--violet);padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
+        .top-header .site-name{color:#fff;font-family:'Arial Black',sans-serif;font-size:18px}
+        .top-header .profile-thumb{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;border:2px solid rgba(255,255,255,0.5);font-size:16px;color:#fff;font-weight:700}
+        .top-header .profile-thumb img{width:100%;height:100%;object-fit:cover}
+        .search-bar{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.06);border-radius:12px;padding:8px 12px;margin-bottom:12px}
+        .search-bar input{flex:1;background:transparent;border:none;color:#fff;font-size:14px;font-family:inherit;outline:none}
+        .add-contact-btn{width:36px;height:36px;border-radius:50%;background:transparent;border:1px solid rgba(255,255,255,0.25);color:#fff;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+        .contacts-list{display:flex;flex-direction:column;gap:2px;flex:1}
+        .contact-item{display:flex;align-items:center;gap:12px;padding:12px;background:rgba(255,255,255,0.03);border-radius:12px;cursor:pointer}
+        .contact-avatar{width:44px;height:44px;border-radius:50%;background:var(--violet);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:700;overflow:hidden}
+        .contact-avatar img{width:100%;height:100%;object-fit:cover}
+        .contact-name{color:#fff;font-weight:500;font-size:15px}
+        .delete-account-btn{text-align:center;padding:16px 0;cursor:pointer;color:#e53935;font-size:13px}
+        .chat-header{display:flex;align-items:center;gap:12px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,0.1);margin-bottom:8px}
+        .back-arrow{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;cursor:pointer}
+        .msg-list{flex:1;overflow-y:auto;padding:8px 0;display:flex;flex-direction:column;gap:4px}
+        .bubble{max-width:78%;padding:8px 12px;border-radius:16px;font-size:13px;line-height:1.4}
+        .bubble.other{background:#fff;align-self:flex-start;border-bottom-left-radius:4px;color:var(--violet-blue)}
+        .bubble.me{background:var(--violet-blue);align-self:flex-end;border-bottom-right-radius:4px;color:#fff}
+        .chat-input-zone{display:flex;gap:6px;padding:6px 10px;align-items:center;background:rgba(255,255,255,0.05);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.1);border-radius:26px;min-height:44px}
+        .chat-input-zone input{flex:1;background:transparent;border:none;color:#fff;font-size:14px;font-family:inherit;outline:none}
+        .icon-btn{width:34px;height:34px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;background:transparent;color:#fff;font-size:22px}
+        .icon-btn.send-btn{background:var(--violet);width:38px;height:38px}.icon-btn.voice-btn{width:46px;height:46px;background:var(--red)}
+        .overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s}
+        .overlay.show{opacity:1;pointer-events:auto}
+        .overlay-panel{background:rgba(255,255,255,0.1);backdrop-filter:blur(25px);border:1px solid rgba(255,255,255,0.2);border-radius:24px;padding:20px;width:90%;max-width:360px;max-height:80vh;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
+        .toast{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.85);border:1px solid rgba(255,255,255,0.2);padding:10px 20px;border-radius:20px;font-size:11px;z-index:200;opacity:0;transition:opacity 0.3s}
+        .toast.show{opacity:1}input[type="file"]{display:none}
     </style>
 </head>
 <body>
-    <div class="app-container" id="app">
-        <div class="page active" id="homePage" style="background:transparent;padding:0;">
-            <div class="slideshow-full" id="slideshow">
-                <div class="slide active" style="background-image:url('https://fxlvovlepjjffjgwifej.supabase.co/storage/v1/object/public/Ilages/IMG-20260502-WA0002.jpg');"></div>
-                <div class="slide" style="background-image:url('https://fxlvovlepjjffjgwifej.supabase.co/storage/v1/object/public/Ilages/IMG-20260502-WA0004.jpg');"></div>
-                <div class="slide" style="background-image:url('https://fxlvovlepjjffjgwifej.supabase.co/storage/v1/object/public/Ilages/IMG-20260502-WA0003.jpg');"></div>
-                <div class="slide" style="background-image:url('https://fxlvovlepjjffjgwifej.supabase.co/storage/v1/object/public/Ilages/IMG-20260502-WA0006.jpg');"></div>
-                <div class="slide" style="background-image:url('https://fxlvovlepjjffjgwifej.supabase.co/storage/v1/object/public/Ilages/IMG-20260502-WA0007.jpg');"></div>
-                <div class="slide" style="background-image:url('https://fxlvovlepjjffjgwifej.supabase.co/storage/v1/object/public/Ilages/IMG-20260502-WA0008.jpg');"></div>
-                <div class="slide" style="background-image:url('https://fxlvovlepjjffjgwifej.supabase.co/storage/v1/object/public/Ilages/IMG-20260502-WA0009.jpg');"></div>
-                <div class="slide" style="background-image:url('https://fxlvovlepjjffjgwifej.supabase.co/storage/v1/object/public/Ilages/IMG-20260502-WA0010.jpg');"></div>
-            </div>
-            <div class="slideshow-overlay"></div>
-            <div class="brand" id="brand"><span class="sonder">Sonder</span><span class="fly">Fly</span></div>
-            <div class="lang-flags"><span class="lang-flag active-lang" data-lang="fr" onclick="setLang('fr')">🇫🇷</span><span class="lang-flag" data-lang="en" onclick="setLang('en')">🇬🇧</span></div>
-            <div class="tagline-container" id="taglineContainer"><span class="tagline-word line1" id="tagline1">CAUSONS</span><span class="tagline-word line2" id="tagline2">DISCRÈTEMENT</span><span class="tagline-word line3" id="tagline3">LÀ !</span></div>
-            <div class="content-overlay">
-                <div class="glass-panel" id="glassPanel">
-                    <div class="greeting-row" id="greetingRow"></div>
-                    <div class="panel-section" id="panelHomeButtons" style="display:flex;flex-direction:column;gap:12px;">
-                        <button class="btn primary" id="btnCreate" onclick="expandPanel('register')">CRÉER UN COMPTE</button>
-                        <button class="btn secondary" id="btnLogin" onclick="expandPanel('login')">S'IDENTIFIER</button>
+<div class="app-container" id="app">
+    <div class="page active" id="homePage" style="background:transparent;padding:0;">
+        <div class="slideshow-full" id="slideshow">
+            <div class="slide active" style="background-image:url('https://fxlvovlepjjffjgwifej.supabase.co/storage/v1/object/public/Ilages/IMG-20260502-WA0002.jpg');"></div>
+            <div class="slide" style="background-image:url('https://fxlvovlepjjffjgwifej.supabase.co/storage/v1/object/public/Ilages/IMG-20260502-WA0004.jpg');"></div>
+            <div class="slide" style="background-image:url('https://fxlvovlepjjffjgwifej.supabase.co/storage/v1/object/public/Ilages/IMG-20260502-WA0003.jpg');"></div>
+            <div class="slide" style="background-image:url('https://fxlvovlepjjffjgwifej.supabase.co/storage/v1/object/public/Ilages/IMG-20260502-WA0006.jpg');"></div>
+            <div class="slide" style="background-image:url('https://fxlvovlepjjffjgwifej.supabase.co/storage/v1/object/public/Ilages/IMG-20260502-WA0007.jpg');"></div>
+            <div class="slide" style="background-image:url('https://fxlvovlepjjffjgwifej.supabase.co/storage/v1/object/public/Ilages/IMG-20260502-WA0008.jpg');"></div>
+            <div class="slide" style="background-image:url('https://fxlvovlepjjffjgwifej.supabase.co/storage/v1/object/public/Ilages/IMG-20260502-WA0009.jpg');"></div>
+            <div class="slide" style="background-image:url('https://fxlvovlepjjffjgwifej.supabase.co/storage/v1/object/public/Ilages/IMG-20260502-WA0010.jpg');"></div>
+        </div>
+        <div class="slideshow-overlay"></div>
+        <div class="floating-bubbles" id="floatingBubbles"></div>
+        <div class="brand" id="brand"><span class="sonder">Sonder</span><span class="fly">Fly</span></div>
+        <div class="lang-flags"><span class="lang-flag active-lang" data-lang="fr" onclick="setLang('fr')">🇫🇷</span><span class="lang-flag" data-lang="en" onclick="setLang('en')">🇬🇧</span></div>
+        <div class="tagline-container" id="taglineContainer"><span class="tagline-word line1" id="tagline1">CAUSONS</span><span class="tagline-word line2" id="tagline2">DISCRÈTEMENT</span><span class="tagline-word line3" id="tagline3">LÀ !</span></div>
+        <div class="content-overlay">
+            <div class="glass-panel" id="glassPanel">
+                <div class="panel-section" id="panelHomeButtons" style="display:flex;flex-direction:column;"><button class="btn primary" id="btnCreate" onclick="expandPanel()">CRÉER MON COMPTE</button></div>
+                <div class="panel-section hide" id="panelRegister">
+                    <div class="profile-preview-reg" onclick="document.getElementById('regPhotoInput').click()"><span id="regPhotoPlaceholder">📷</span><img id="regPhotoImg" style="display:none;"></div>
+                    <input type="file" id="regPhotoInput" accept="image/*" onchange="previewRegPhoto(this)">
+                    <div style="position:relative;">
+                        <div class="phone-row"><button class="country-select" id="countryBtn" onclick="toggleCountryList()"><span id="selectedFlag">🇫🇷</span> <span id="selectedCode">+33</span> ▼</button><input type="tel" id="regPhone" placeholder="6 12 34 56 78"></div>
+                        <div class="country-dropdown" id="countryList"></div>
                     </div>
-                    <div class="panel-section hide" id="panelRegister">
-                        <div class="field"><label>Nom complet</label><input type="text" id="regName" placeholder="Jean Dupont"></div>
-                        <div class="field"><label>Numéro</label><input type="tel" id="regPhone" placeholder="+33 6 12 34 56 78"></div>
-                        <div class="field"><label>Mot de passe</label><input type="password" id="regPassword" placeholder="••••••••"></div>
-                        <button class="btn primary" onclick="register()">VALIDÉ</button>
-                        <div class="btn-back-panel" onclick="collapsePanel()">← Retour</div>
-                    </div>
-                    <div class="panel-section hide" id="panelLogin">
-                        <div class="field"><label>Numéro</label><input type="text" id="loginPhone" placeholder="+33 6 12 34 56 78"></div>
-                        <div class="field"><label>Mot de passe</label><input type="password" id="loginPassword" placeholder="••••••••"></div>
-                        <button class="btn primary" onclick="login()">VALIDÉ</button>
-                        <div class="btn-back-panel" onclick="collapsePanel()">← Retour</div>
-                    </div>
+                    <div class="checkbox-row"><input type="checkbox" id="acceptTerms"><label for="acceptTerms" id="termsLabel">J'accepte les conditions d'utilisation</label></div>
+                    <button class="btn primary" id="btnContinue" onclick="register()">CONTINUER</button>
+                    <div class="btn-back-panel" onclick="collapsePanel()" id="btnBack">← Retour</div>
                 </div>
             </div>
         </div>
-        <div class="page hidden-right" id="contactsPage">
-            <div class="top-header"><span class="site-name">SonderFly</span><div class="profile-thumb" id="profileThumb" onclick="showProfile()">?</div></div>
-            <div style="padding:0 16px;display:flex;flex-direction:column;flex:1;">
-                <div class="search-bar"><span>🔍</span><input type="text" id="searchInput" placeholder="Rechercher..." oninput="filterContacts()"><button class="add-contact-btn" onclick="showAddContact()">+</button></div>
-                <div class="contacts-list" id="contactsList"><div style="text-align:center;color:#555;padding:30px;">Aucun contact</div></div>
-                <div class="delete-account-btn" onclick="confirmDeleteAccount()">Supprimer le compte</div>
-            </div>
-        </div>
-        <div class="page hidden-right" id="msgPage" style="padding:16px;">
-            <div class="chat-header"><div class="back-arrow" onclick="goTo('contactsPage')">←</div><div style="width:42px;height:42px;border-radius:50%;background:var(--violet);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;" id="chatAvatar">?</div><div class="info"><div class="name" id="chatName" style="color:#fff;font-weight:600;">Discussion</div></div></div>
-            <div class="msg-list" id="msgList"><div style="text-align:center;color:#555;padding:30px;">Aucun message</div></div>
-            <div class="chat-input-zone"><button class="icon-btn" onclick="document.getElementById('imageInput').click()">+</button><input type="text" id="textInput" placeholder="Message..." maxlength="500"><button class="icon-btn send-btn" onclick="sendText()">➤</button><button class="icon-btn voice-btn" id="pttBtn">🎤</button></div>
-            <input type="file" id="imageInput" accept="image/*" multiple onchange="handleMedia(this)">
-        </div>
-        <div class="overlay" id="addContactOverlay"><div class="overlay-panel"><h3 style="color:#fff;">Nouveau contact</h3><div class="field"><label>NUMÉRO CONTACT</label><input type="tel" id="newContactPhone"></div><button class="btn primary" onclick="addContact()">AJOUTER</button><button class="btn secondary" onclick="hideAddContact()">Annuler</button></div></div>
-        <div class="overlay" id="profileOverlay"><div class="overlay-panel"><div style="text-align:center;color:#fff;"><div id="profileName" style="font-size:18px;font-weight:600;"></div><div id="profilePhone" style="color:#aaa;"></div></div><button class="btn primary" onclick="document.getElementById('profileOverlay').classList.remove('show');showEditProfile();">MODIFIER MON PROFIL</button><button class="btn danger" onclick="document.getElementById('profileOverlay').classList.remove('show')">Fermer</button></div></div>
-        <div class="overlay" id="editProfileOverlay"><div class="overlay-panel"><h3 style="color:#fff;">Modifier mon profil</h3><div class="field"><label>Nom complet</label><input type="text" id="editName"></div><div class="field"><label>Nouveau mot de passe</label><input type="password" id="editPassword" placeholder="Laisser vide..."></div><button class="btn primary" onclick="saveProfile()">ENREGISTRER</button><button class="btn secondary" onclick="document.getElementById('editProfileOverlay').classList.remove('show')">Annuler</button></div></div>
-        <div class="overlay" id="deleteConfirmOverlay"><div class="overlay-panel"><h3 style="color:#fff;">⚠️ Attention</h3><p style="color:#fff;text-align:center;">Voulez-vous vraiment SUPPRIMER le compte ?</p><p style="color:#e53935;text-align:center;font-size:12px;">Cette action est irréversible.</p><button class="btn danger" onclick="deleteAccount()">SUPPRIMER</button><button class="btn secondary" onclick="document.getElementById('deleteConfirmOverlay').classList.remove('show')">Annuler</button></div></div>
-        <div class="toast" id="toast"></div>
     </div>
-    <script>
-        var TRAD = { fr: { createAccount: 'CRÉER UN COMPTE', signIn: 'S\'IDENTIFIER', search: 'Rechercher...', noContacts: 'Aucun contact', noMessages: 'Aucun message', fillAll: 'Remplissez tous les champs', accountCreated: 'Compte créé !', connected: 'Connecté !', contactAdded: ' ajouté !', notFound: 'Ce numéro n\'est pas SonderFly', deleted: 'Compte supprimé', enterNumber: 'Entrez un numéro', enterName: 'Entrez un nom', greetings: ['Bonjour', 'Hello', 'Привет', 'Hola', '你好', 'Báwo', 'مرحباً', 'こんにちは', 'Merhaba', '안녕하세요', 'Ciao', 'नमस्ते'], taglines: [['CAUSONS', 'DISCRÈTEMENT', 'LÀ !'], ['OUBIONS', 'APRÈS', '24H'], ['REJOIGNEZ', 'LA', 'COMMUNAUTÉ'], ['DISCUTE', 'PARTAGE', 'RÊVE']] }, en: { createAccount: 'CREATE ACCOUNT', signIn: 'SIGN IN', search: 'Search...', noContacts: 'No contacts', noMessages: 'No messages', fillAll: 'Fill all fields', accountCreated: 'Account created!', connected: 'Connected!', contactAdded: ' added!', notFound: 'This number is not on SonderFly', deleted: 'Account deleted', enterNumber: 'Enter a number', enterName: 'Enter a name', greetings: ['Hello', 'Bonjour', 'Привет', 'Hola', '你好', 'Hello', 'مرحباً', 'こんにちは', 'Merhaba', '안녕하세요', 'Ciao', 'नमस्ते'], taglines: [['LET\'S TALK', 'DISCREETLY', '!'], ['FORGET', 'AFTER', '24H'], ['JOIN', 'THE', 'COMMUNITY'], ['CHAT', 'SHARE', 'DREAM']] } };
-        var S = { page: 'homePage', lang: 'fr', user: null, currentChat: null, currentChatPhone: null, messages: {}, contacts: [], selectedMedia: [], ws: null, isPTT: false, mediaRecorder: null, notifications: {} };
+    <div class="page hidden-right" id="contactsPage">
+        <div class="top-header"><span class="site-name">SonderFly</span><div class="profile-thumb" id="profileThumb" onclick="showProfile()">?</div></div>
+        <div style="padding:0 16px;display:flex;flex-direction:column;flex:1;">
+            <div class="search-bar"><span>🔍</span><input type="text" id="searchInput" placeholder="Rechercher..." oninput="filterContacts()"><button class="add-contact-btn" onclick="showAddContact()">+</button></div>
+            <div class="contacts-list" id="contactsList"><div style="text-align:center;color:#555;padding:30px;">Aucun contact</div></div>
+            <div class="delete-account-btn" onclick="confirmDeleteAccount()" id="deleteAccountBtn">Supprimer le compte</div>
+        </div>
+    </div>
+    <div class="page hidden-right" id="msgPage" style="padding:16px;">
+        <div class="chat-header"><div class="back-arrow" onclick="goTo('contactsPage')">←</div><div style="width:42px;height:42px;border-radius:50%;background:var(--violet);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;" id="chatAvatar">?</div><div class="info"><div class="name" id="chatName" style="color:#fff;font-weight:600;">Discussion</div></div></div>
+        <div class="msg-list" id="msgList"><div style="text-align:center;color:#555;padding:30px;">Aucun message</div></div>
+        <div class="chat-input-zone"><button class="icon-btn" onclick="document.getElementById('imageInput').click()">+</button><input type="text" id="textInput" placeholder="Message..." maxlength="500"><button class="icon-btn send-btn" onclick="sendText()">➤</button><button class="icon-btn voice-btn" id="pttBtn">🎤</button></div>
+        <input type="file" id="imageInput" accept="image/*" multiple onchange="handleMedia(this)">
+    </div>
+    <div class="overlay" id="addContactOverlay"><div class="overlay-panel"><h3 style="color:#fff;">Ajouter un contact</h3><div class="phone-row"><button class="country-select" id="countryBtn2" onclick="toggleCountryList2()"><span id="selectedFlag2">🇫🇷</span> <span id="selectedCode2">+33</span> ▼</button><input type="tel" id="newContactPhone" placeholder="6 12 34 56 78"></div><div class="country-dropdown" id="countryList2"></div><button class="btn primary" onclick="addContact()">AJOUTER</button><button class="btn secondary" onclick="hideAddContact()">Annuler</button></div></div>
+    <div class="overlay" id="profileOverlay"><div class="overlay-panel"><div style="text-align:center;color:#fff;"><div id="profileName" style="font-size:18px;font-weight:600;"></div><div id="profilePhone" style="color:#aaa;"></div></div><button class="btn primary" onclick="document.getElementById('profileOverlay').classList.remove('show');showEditProfile();">MODIFIER MON PROFIL</button><button class="btn danger" onclick="document.getElementById('profileOverlay').classList.remove('show')">Fermer</button></div></div>
+    <div class="overlay" id="editProfileOverlay"><div class="overlay-panel"><h3 style="color:#fff;">Modifier mon profil</h3><div class="field"><label>Nom complet</label><input type="text" id="editName"></div><button class="btn primary" onclick="saveProfile()">ENREGISTRER</button><button class="btn secondary" onclick="document.getElementById('editProfileOverlay').classList.remove('show')">Annuler</button></div></div>
+    <div class="overlay" id="deleteConfirmOverlay"><div class="overlay-panel"><h3 style="color:#fff;">⚠️ Attention</h3><p style="color:#fff;text-align:center;">Voulez-vous vraiment SUPPRIMER le compte ?</p><button class="btn danger" onclick="deleteAccount()">SUPPRIMER</button><button class="btn secondary" onclick="document.getElementById('deleteConfirmOverlay').classList.remove('show')">Annuler</button></div></div>
+    <div class="toast" id="toast"></div>
+</div>
+<script>
+var TRAD={fr:{createAccount:'CRÉER MON COMPTE',continue:'CONTINUER',back:'← Retour',terms:"J'accepte les conditions d'utilisation",search:'Rechercher...',noContacts:'Aucun contact',noMessages:'Aucun message',fillPhone:'Entrez votre numéro',acceptTerms:'Veuillez accepter les conditions',accountCreated:'Compte créé !',connected:'Connecté !',contactAdded:' ajouté !',notFound:"Ce numéro n'est pas SonderFly",deleted:'Compte supprimé',deleteAccount:'Supprimer le compte',enterNumber:'Entrez un numéro',taglines:[['CAUSONS','DISCRÈTEMENT','LÀ !'],['OUBIONS','APRÈS','24H'],['REJOIGNEZ','LA','COMMUNAUTÉ'],['DISCUTE','PARTAGE','RÊVE']]},en:{createAccount:'CREATE MY ACCOUNT',continue:'CONTINUE',back:'← Back',terms:'I accept the terms of use',search:'Search...',noContacts:'No contacts',noMessages:'No messages',fillPhone:'Enter your number',acceptTerms:'Please accept the terms',accountCreated:'Account created!',connected:'Connected!',contactAdded:' added!',notFound:'This number is not SonderFly',deleted:'Account deleted',deleteAccount:'Delete account',enterNumber:'Enter a number',taglines:[["LET'S TALK",'DISCREETLY','!'],['FORGET','AFTER','24H'],['JOIN','THE','COMMUNITY'],['CHAT','SHARE','DREAM']]}};
 
-        function T() { return TRAD[S.lang]; }
-        var WS_URL = (location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host;
+var COUNTRIES=[{flag:'🇫🇷',name:'France',code:'+33'},{flag:'🇧🇯',name:'Bénin',code:'+229'},{flag:'🇨🇮',name:"Côte d'Ivoire",code:'+225'},{flag:'🇸🇳',name:'Sénégal',code:'+221'},{flag:'🇹🇬',name:'Togo',code:'+228'},{flag:'🇨🇲',name:'Cameroun',code:'+237'},{flag:'🇧🇫',name:'Burkina Faso',code:'+226'},{flag:'🇲🇱',name:'Mali',code:'+223'},{flag:'🇬🇳',name:'Guinée',code:'+224'},{flag:'🇺🇸',name:'États-Unis',code:'+1'},{flag:'🇬🇧',name:'Royaume-Uni',code:'+44'},{flag:'🇳🇬',name:'Nigeria',code:'+234'},{flag:'🇬🇭',name:'Ghana',code:'+233'},{flag:'🇩🇪',name:'Allemagne',code:'+49'},{flag:'🇪🇸',name:'Espagne',code:'+34'},{flag:'🇮🇹',name:'Italie',code:'+39'},{flag:'🇧🇪',name:'Belgique',code:'+32'},{flag:'🇨🇭',name:'Suisse',code:'+41'},{flag:'🇨🇦',name:'Canada',code:'+1'},{flag:'🇧🇷',name:'Brésil',code:'+55'},{flag:'🇲🇦',name:'Maroc',code:'+212'},{flag:'🇩🇿',name:'Algérie',code:'+213'},{flag:'🇹🇳',name:'Tunisie',code:'+216'},{flag:'🇿🇦',name:'Afrique du Sud',code:'+27'},{flag:'🇰🇪',name:'Kenya',code:'+254'},{flag:'🇪🇬',name:'Égypte',code:'+20'},{flag:'🇨🇳',name:'Chine',code:'+86'},{flag:'🇯🇵',name:'Japon',code:'+81'},{flag:'🇮🇳',name:'Inde',code:'+91'},{flag:'🇦🇺',name:'Australie',code:'+61'},{flag:'🇷🇺',name:'Russie',code:'+7'},{flag:'🇹🇷',name:'Turquie',code:'+90'},{flag:'🇳🇱',name:'Pays-Bas',code:'+31'},{flag:'🇵🇹',name:'Portugal',code:'+351'},{flag:'🇸🇪',name:'Suède',code:'+46'},{flag:'🇳🇴',name:'Norvège',code:'+47'},{flag:'🇩🇰',name:'Danemark',code:'+45'},{flag:'🇫🇮',name:'Finlande',code:'+358'},{flag:'🇵🇱',name:'Pologne',code:'+48'},{flag:'🇦🇹',name:'Autriche',code:'+43'},{flag:'🇬🇷',name:'Grèce',code:'+30'},{flag:'🇮🇪',name:'Irlande',code:'+353'},{flag:'🇲🇽',name:'Mexique',code:'+52'},{flag:'🇦🇷',name:'Argentine',code:'+54'},{flag:'🇨🇴',name:'Colombie',code:'+57'},{flag:'🇨🇱',name:'Chili',code:'+56'},{flag:'🇵🇪',name:'Pérou',code:'+51'},{flag:'🇰🇷',name:'Corée du Sud',code:'+82'},{flag:'🇸🇦',name:'Arabie Saoudite',code:'+966'},{flag:'🇦🇪',name:'Émirats Arabes Unis',code:'+971'},{flag:'🇶🇦',name:'Qatar',code:'+974'},{flag:'🇰🇼',name:'Koweït',code:'+965'},{flag:'🇴🇲',name:'Oman',code:'+968'},{flag:'🇧🇭',name:'Bahreïn',code:'+973'},{flag:'🇯🇴',name:'Jordanie',code:'+962'},{flag:'🇱🇧',name:'Liban',code:'+961'},{flag:'🇸🇾',name:'Syrie',code:'+963'},{flag:'🇮🇶',name:'Irak',code:'+964'},{flag:'🇾🇪',name:'Yémen',code:'+967'},{flag:'🇵🇸',name:'Palestine',code:'+970'},{flag:'🇮🇱',name:'Israël',code:'+972'},{flag:'🇵🇰',name:'Pakistan',code:'+92'},{flag:'🇧🇩',name:'Bangladesh',code:'+880'},{flag:'🇱🇰',name:'Sri Lanka',code:'+94'},{flag:'🇳🇵',name:'Népal',code:'+977'},{flag:'🇲🇾',name:'Malaisie',code:'+60'},{flag:'🇮🇩',name:'Indonésie',code:'+62'},{flag:'🇵🇭',name:'Philippines',code:'+63'},{flag:'🇹🇭',name:'Thaïlande',code:'+66'},{flag:'🇻🇳',name:'Vietnam',code:'+84'},{flag:'🇸🇬',name:'Singapour',code:'+65'},{flag:'🇭🇰',name:'Hong Kong',code:'+852'},{flag:'🇹🇼',name:'Taïwan',code:'+886'},{flag:'🇳🇿',name:'Nouvelle-Zélande',code:'+64'},{flag:'🇺🇦',name:'Ukraine',code:'+380'},{flag:'🇷🇴',name:'Roumanie',code:'+40'},{flag:'🇭🇺',name:'Hongrie',code:'+36'},{flag:'🇨🇿',name:'Rép. Tchèque',code:'+420'},{flag:'🇸🇰',name:'Slovaquie',code:'+421'},{flag:'🇧🇬',name:'Bulgarie',code:'+359'},{flag:'🇷🇸',name:'Serbie',code:'+381'},{flag:'🇭🇷',name:'Croatie',code:'+385'},{flag:'🇸🇮',name:'Slovénie',code:'+386'},{flag:'🇱🇹',name:'Lituanie',code:'+370'},{flag:'🇱🇻',name:'Lettonie',code:'+371'},{flag:'🇪🇪',name:'Estonie',code:'+372'},{flag:'🇮🇸',name:'Islande',code:'+354'},{flag:'🇨🇾',name:'Chypre',code:'+357'},{flag:'🇲🇹',name:'Malte',code:'+356'},{flag:'🇱🇺',name:'Luxembourg',code:'+352'},{flag:'🇲🇨',name:'Monaco',code:'+377'},{flag:'🇦🇩',name:'Andorre',code:'+376'},{flag:'🇸🇲',name:'Saint-Marin',code:'+378'},{flag:'🇻🇦',name:'Vatican',code:'+379'},{flag:'🇦🇱',name:'Albanie',code:'+355'},{flag:'🇲🇰',name:'Macédoine du Nord',code:'+389'},{flag:'🇧🇦',name:'Bosnie-Herzégovine',code:'+387'},{flag:'🇲🇪',name:'Monténégro',code:'+382'},{flag:'🇲🇩',name:'Moldavie',code:'+373'},{flag:'🇬🇪',name:'Géorgie',code:'+995'},{flag:'🇦🇲',name:'Arménie',code:'+374'},{flag:'🇦🇿',name:'Azerbaïdjan',code:'+994'},{flag:'🇰🇿',name:'Kazakhstan',code:'+7'},{flag:'🇺🇿',name:'Ouzbékistan',code:'+998'},{flag:'🇹🇲',name:'Turkménistan',code:'+993'},{flag:'🇰🇬',name:'Kirghizistan',code:'+996'},{flag:'🇹🇯',name:'Tadjikistan',code:'+992'},{flag:'🇲🇳',name:'Mongolie',code:'+976'},{flag:'🇦🇫',name:'Afghanistan',code:'+93'},{flag:'🇮🇷',name:'Iran',code:'+98'},{flag:'🇲🇲',name:'Myanmar',code:'+95'},{flag:'🇰🇭',name:'Cambodge',code:'+855'},{flag:'🇱🇦',name:'Laos',code:'+856'},{flag:'🇧🇳',name:'Brunei',code:'+673'},{flag:'🇲🇻',name:'Maldives',code:'+960'},{flag:'🇧🇹',name:'Bhoutan',code:'+975'},{flag:'🇹🇱',name:'Timor Oriental',code:'+670'},{flag:'🇫🇯',name:'Fidji',code:'+679'},{flag:'🇵🇬',name:'Papouasie-Nouvelle-Guinée',code:'+675'},{flag:'🇸🇧',name:'Îles Salomon',code:'+677'},{flag:'🇻🇺',name:'Vanuatu',code:'+678'},{flag:'🇼🇸',name:'Samoa',code:'+685'},{flag:'🇹🇴',name:'Tonga',code:'+676'},{flag:'🇨🇺',name:'Cuba',code:'+53'},{flag:'🇯🇲',name:'Jamaïque',code:'+1'},{flag:'🇭🇹',name:'Haïti',code:'+509'},{flag:'🇩🇴',name:'Rép. Dominicaine',code:'+1'},{flag:'🇧🇸',name:'Bahamas',code:'+1'},{flag:'🇧🇧',name:'Barbade',code:'+1'},{flag:'🇹🇹',name:'Trinité-et-Tobago',code:'+1'},{flag:'🇬🇾',name:'Guyana',code:'+592'},{flag:'🇸🇷',name:'Suriname',code:'+597'},{flag:'🇧🇿',name:'Belize',code:'+501'},{flag:'🇬🇹',name:'Guatemala',code:'+502'},{flag:'🇸🇻',name:'Salvador',code:'+503'},{flag:'🇭🇳',name:'Honduras',code:'+504'},{flag:'🇳🇮',name:'Nicaragua',code:'+505'},{flag:'🇨🇷',name:'Costa Rica',code:'+506'},{flag:'🇵🇦',name:'Panama',code:'+507'},{flag:'🇪🇨',name:'Équateur',code:'+593'},{flag:'🇧🇴',name:'Bolivie',code:'+591'},{flag:'🇵🇾',name:'Paraguay',code:'+595'},{flag:'🇺🇾',name:'Uruguay',code:'+598'},{flag:'🇻🇪',name:'Venezuela',code:'+58'},{flag:'🇨🇬',name:'Congo',code:'+242'},{flag:'🇨🇩',name:'RDC',code:'+243'},{flag:'🇬🇦',name:'Gabon',code:'+241'},{flag:'🇦🇴',name:'Angola',code:'+244'},{flag:'🇳🇦',name:'Namibie',code:'+264'},{flag:'🇧🇼',name:'Botswana',code:'+267'},{flag:'🇿🇲',name:'Zambie',code:'+260'},{flag:'🇿🇼',name:'Zimbabwe',code:'+263'},{flag:'🇲🇼',name:'Malawi',code:'+265'},{flag:'🇲🇿',name:'Mozambique',code:'+258'},{flag:'🇹🇿',name:'Tanzanie',code:'+255'},{flag:'🇺🇬',name:'Ouganda',code:'+256'},{flag:'🇷🇼',name:'Rwanda',code:'+250'},{flag:'🇧🇮',name:'Burundi',code:'+257'},{flag:'🇪🇹',name:'Éthiopie',code:'+251'},{flag:'🇸🇴',name:'Somalie',code:'+252'},{flag:'🇸🇩',name:'Soudan',code:'+249'},{flag:'🇸🇸',name:'Soudan du Sud',code:'+211'},{flag:'🇱🇾',name:'Libye',code:'+218'},{flag:'🇲🇷',name:'Mauritanie',code:'+222'},{flag:'🇬🇲',name:'Gambie',code:'+220'},{flag:'🇬🇼',name:'Guinée-Bissau',code:'+245'},{flag:'🇸🇱',name:'Sierra Leone',code:'+232'},{flag:'🇱🇷',name:'Libéria',code:'+231'},{flag:'🇳🇪',name:'Niger',code:'+227'},{flag:'🇹🇩',name:'Tchad',code:'+235'},{flag:'🇨🇫',name:'Centrafrique',code:'+236'},{flag:'🇬🇶',name:'Guinée Équatoriale',code:'+240'},{flag:'🇸🇹',name:'São Tomé',code:'+239'},{flag:'🇨🇻',name:'Cap-Vert',code:'+238'},{flag:'🇰🇲',name:'Comores',code:'+269'},{flag:'🇲🇬',name:'Madagascar',code:'+261'},{flag:'🇲🇺',name:'Île Maurice',code:'+230'},{flag:'🇸🇨',name:'Seychelles',code:'+248'},{flag:'🇩🇯',name:'Djibouti',code:'+253'},{flag:'🇪🇷',name:'Érythrée',code:'+291'},{flag:'🇱🇸',name:'Lesotho',code:'+266'},{flag:'🇸🇿',name:'Eswatini',code:'+268'}];
 
-        function toast(m) { var e = document.getElementById('toast');
-            e.textContent = m;
-            e.classList.add('show');
-            clearTimeout(e._t);
-            e._t = setTimeout(function() { e.classList.remove('show'); }, 2000); }
-
-        function whooshSound() { try { var c = new AudioContext(),
-                    o = c.createOscillator(),
-                    g = c.createGain();
-                o.type = 'sine';
-                o.frequency.setValueAtTime(300, c.currentTime);
-                o.frequency.exponentialRampToValueAtTime(800, c.currentTime + 0.3);
-                g.gain.setValueAtTime(0.12, c.currentTime);
-                g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.35);
-                o.connect(g);
-                g.connect(c.destination);
-                o.start();
-                o.stop(c.currentTime + 0.35); } catch (e) {} }
-
-        function bubbleSound() { try { var c = new AudioContext(),
-                    o = c.createOscillator(),
-                    g = c.createGain();
-                o.type = 'sine';
-                o.frequency.setValueAtTime(800, c.currentTime);
-                o.frequency.exponentialRampToValueAtTime(1200, c.currentTime + 0.08);
-                g.gain.setValueAtTime(0.1, c.currentTime);
-                g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.1);
-                o.connect(g);
-                g.connect(c.destination);
-                o.start();
-                o.stop(c.currentTime + 0.1); } catch (e) {} }
-
-        function bellSound() { try { var c = new AudioContext(); [800, 1000, 1200].forEach(function(f, i) { var o = c
-                        .createOscillator(),
-                        g = c.createGain();
-                o.type = 'sine';
-                o.frequency.setValueAtTime(f, c.currentTime + i * 0.1);
-                g.gain.setValueAtTime(0.08, c.currentTime + i * 0.1);
-                g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + i * 0.15);
-                o.connect(g);
-                g.connect(c.destination);
-                o.start(c.currentTime + i * 0.1);
-                o.stop(c.currentTime + i * 0.15); }); } catch (e) {} }
-
-        function beepSound(s) { try { var c = new AudioContext(),
-                    o = c.createOscillator(),
-                    g = c.createGain();
-                o.type = 'sawtooth';
-                o.frequency.setValueAtTime(s ? 800 : 400, c.currentTime);
-                g.gain.setValueAtTime(0.1, c.currentTime);
-                g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.15);
-                o.connect(g);
-                g.connect(c.destination);
-                o.start();
-                o.stop(c.currentTime + 0.15); } catch (e) {} }
-
-        function connectWS() { if (S.ws && S.ws.readyState === WebSocket.OPEN) return;
-            S.ws = new WebSocket(WS_URL);
-            S.ws.onopen = function() { if (S.user) sendWS({ type: 'join', phone: S.user.phone, name: S.user.name }); };
-            S.ws.onmessage = function(e) { try { handleWS(JSON.parse(e.data)); } catch (err) {} }; }
-
-        function sendWS(d) { if (S.ws && S.ws.readyState === WebSocket.OPEN) S.ws.send(JSON.stringify(d)); }
-
-        function handleWS(m) { var tr = T(); switch (m.type) { case 'register-success':
-                S.user = { phone: m.phone, name: m.name };
-                updateProfileUI();
-                toast(tr.accountCreated);
-                goTo('contactsPage');
-                document.getElementById('homePage').style.display = 'none'; break; case 'user-data':
-                S.user = { phone: m.phone, name: m.name, photo: m.photo || '' };
-                updateProfileUI();
-                toast(tr.connected);
-                goTo('contactsPage');
-                document.getElementById('homePage').style.display = 'none'; break; case 'contact-check': if (m
-                .isHellosorft) { sendWS({ type: 'get-contacts' });
-                    toast(m.userName + tr.contactAdded); } else toast(tr.notFound); break; case 'contacts-list':
-                S.contacts = m.contacts || [];
-                renderContacts(); break; case 'text-message': case 'image-message': case 'voice-message': if (!S
-                    .messages[m.userName]) S.messages[m.userName] = [];
-                S.messages[m.userName].push({ type: m.type.replace('-message', ''), sender: m.userName, text: m.text,
-                    imageData: m.imageData, audioData: m.audioData, duration: m.duration, time: Date.now(), expiresAt: Date
-                        .now() + 86400000, read: false }); if (S.currentChat === m.userName && S.page === 'msgPage') {
-                    displayMsgs(m.userName);
-                    bubbleSound(); } else { S.notifications[m.userName] = (S.notifications[m.userName] || 0) + 1;
-                    bellSound(); }
-                renderContacts(); break; case 'account-deleted': toast(tr.deleted);
-                disconnect(); break; case 'error': toast(m.message); break; } }
-
-        function goTo(p) { document.getElementById(S.page).classList.remove('active');
-            document.getElementById(S.page).classList.add('hidden-left');
-            document.getElementById(p).classList.remove('hidden-left', 'hidden-right');
-            document.getElementById(p).classList.add('active');
-            S.page = p; if (p === 'contactsPage') sendWS({ type: 'get-contacts' }); }
-
-        function setLang(l) { S.lang = l;
-            document.querySelectorAll('.lang-flag').forEach(function(f) { f.classList.remove('active-lang'); });
-            document.querySelectorAll('.lang-flag[data-lang="' + l + '"]').forEach(function(f) { f.classList.add(
-            'active-lang'); });
-            updateAllTexts();
-            updateGreetings();
-            updateTaglines(); }
-
-        function updateAllTexts() { var tr = T();
-            document.getElementById('btnCreate').textContent = tr.createAccount;
-            document.getElementById('btnLogin').textContent = tr.signIn;
-            document.getElementById('searchInput').placeholder = tr.search; }
-
-        function updateGreetings() { var g = T().greetings; for (var i = 0; i < 3; i++) { var s = document.getElementById(
-                    'g' + i); if (s) { s.textContent = g[Math.floor(Math.random() * g.length)];
-                    s.style.color = '#fff'; } } }
-
-        function initGreetings() { var r = document.getElementById('greetingRow');
-            r.innerHTML =
-                '<span class="greeting-word" id="g0"></span><span class="greeting-word" id="g1"></span><span class="greeting-word" id="g2"></span>';
-            updateGreetings();
-            setInterval(updateGreetings, 1800); }
-        initGreetings();
-        var tagCycle = 0;
-
-        function updateTaglines() { var tr = T(),
-                w = tr.taglines[tagCycle];
-            document.getElementById('tagline1').textContent = w[0];
-            document.getElementById('tagline2').textContent = w[1];
-            document.getElementById('tagline3').textContent = w[2]; }
-        setInterval(function() { updateTaglines();
-            tagCycle = (tagCycle + 1) % T().taglines.length; }, 6000);
-        var si = 0;
-        setInterval(function() { var s = document.querySelectorAll('#slideshow .slide'); if (s.length) { s[si].classList
-                    .remove('active');
-                si = (si + 1) % s.length;
-                s[si].classList.add('active'); } }, 3500);
-
-        function expandPanel(t) { whooshSound();
-            var gp = document.getElementById('glassPanel'),
-                brand = document.getElementById('brand'),
-                gr = document.getElementById('greetingRow'),
-                tc = document.getElementById('taglineContainer'),
-                phb = document.getElementById('panelHomeButtons'),
-                pr = document.getElementById('panelRegister'),
-                pl = document.getElementById('panelLogin');
-            gp.classList.add('expand');
-            brand.classList.add('move-down');
-            gr.classList.add('hide');
-            tc.classList.add('hide');
-            phb.classList.add('hide');
-            pr.classList.add('hide');
-            pl.classList.add('hide'); if (t === 'register') pr.classList.remove('hide');
-            else pl.classList.remove('hide'); }
-
-        function collapsePanel() { var gp = document.getElementById('glassPanel'),
-                brand = document.getElementById('brand'),
-                gr = document.getElementById('greetingRow'),
-                tc = document.getElementById('taglineContainer'),
-                phb = document.getElementById('panelHomeButtons'),
-                pr = document.getElementById('panelRegister'),
-                pl = document.getElementById('panelLogin');
-            gp.classList.remove('expand');
-            brand.classList.remove('move-down');
-            gr.classList.remove('hide');
-            tc.classList.remove('hide');
-            phb.classList.remove('hide');
-            pr.classList.add('hide');
-            pl.classList.add('hide'); }
-
-        function register() { var tr = T(),
-                n = document.getElementById('regName').value.trim(),
-                p = document.getElementById('regPhone').value.trim(),
-                pw = document.getElementById('regPassword').value.trim(); if (!n || !p || !pw) return toast(tr
-                .fillAll);
-            connectWS();
-            var trySend = function() { if (S.ws && S.ws.readyState === WebSocket.OPEN) { sendWS({ type: 'register',
-                        phone: p, name: n, password: pw }); ['regName', 'regPhone', 'regPassword'].forEach(
-                        function(id) { document.getElementById(id).value = ''; });
-                    collapsePanel(); } else setTimeout(trySend, 300); };
-            setTimeout(trySend, 500); }
-
-        function login() { var tr = T(),
-                p = document.getElementById('loginPhone').value.trim(),
-                pw = document.getElementById('loginPassword').value.trim(); if (!p || !pw) return toast(tr.fillAll);
-            connectWS();
-            var trySend = function() { if (S.ws && S.ws.readyState === WebSocket.OPEN) { sendWS({ type: 'login', phone: p,
-                        password: pw }); ['loginPhone', 'loginPassword'].forEach(function(id) { document.getElementById(
-                        id).value = ''; });
-                    collapsePanel(); } else setTimeout(trySend, 300); };
-            setTimeout(trySend, 500); }
-
-        function disconnect() { sendWS({ type: 'leave' }); if (S.ws) S.ws.close();
-            S.user = null;
-            S.messages = {};
-            S.contacts = [];
-            S.currentChat = null;
-            document.getElementById('homePage').style.display = '';
-            goTo('homePage'); }
-
-        function updateProfileUI() { if (!S.user) return;
-            document.getElementById('profileThumb').textContent = (S.user.name || '?').charAt(0).toUpperCase(); }
-
-        function showProfile() { document.getElementById('profileName').textContent = S.user ? S.user.name || '' : '';
-            document.getElementById('profilePhone').textContent = S.user ? S.user.phone || '' : '';
-            document.getElementById('profileOverlay').classList.add('show'); }
-
-        function showEditProfile() { document.getElementById('editName').value = S.user ? S.user.name || '' : '';
-            document.getElementById('editPassword').value = '';
-            document.getElementById('editProfileOverlay').classList.add('show'); }
-
-        function saveProfile() { var tr = T(),
-                name = document.getElementById('editName').value.trim(),
-                pw = document.getElementById('editPassword').value.trim(); if (!name) return toast(tr.enterName);
-            sendWS({ type: 'update-profile', name: name, password: pw || null });
-            S.user.name = name;
-            updateProfileUI();
-            document.getElementById('editProfileOverlay').classList.remove('show');
-            toast('Profil mis à jour'); }
-
-        function confirmDeleteAccount() { document.getElementById('deleteConfirmOverlay').classList.add('show'); }
-
-        function deleteAccount() { sendWS({ type: 'delete-account' });
-            document.getElementById('deleteConfirmOverlay').classList.remove('show'); }
-
-        function showAddContact() { whooshSound();
-            document.getElementById('addContactOverlay').classList.add('show'); }
-
-        function hideAddContact() { document.getElementById('addContactOverlay').classList.remove('show');
-            document.getElementById('newContactPhone').value = ''; }
-
-        function addContact() { var tr = T(),
-                p = document.getElementById('newContactPhone').value.trim(); if (!p) return toast(tr.enterNumber);
-            sendWS({ type: 'check-contact', phone: p });
-            hideAddContact(); }
-
-        function renderContacts() { var tr = T(),
-                list = document.getElementById('contactsList'); if (!S.contacts.length) { list.innerHTML =
-                    '<div style="text-align:center;color:#555;padding:30px;">' + tr.noContacts + '</div>'; return; }
-            list.innerHTML = '';
-            S.contacts.forEach(function(c) { var div = document.createElement('div');
-                div.className = 'contact-item';
-                div.onclick = function() { S.notifications[c.contact_name] = 0;
-                    openChat(c.contact_name, c.contact_phone); };
-                div.innerHTML = '<div class="contact-avatar">' + (c.contact_name || '?').charAt(0).toUpperCase() +
-                    '</div><div class="contact-name" style="flex:1;">' + c.contact_name + '</div>';
-                list.appendChild(div); }); }
-
-        function filterContacts() { renderContacts(); }
-
-        function openChat(name, phone) { S.currentChat = name;
-            S.currentChatPhone = phone;
-            S.notifications[name] = 0;
-            document.getElementById('chatName').textContent = name;
-            document.getElementById('chatAvatar').textContent = name.charAt(0).toUpperCase();
-            displayMsgs(name);
-            goTo('msgPage');
-            renderContacts(); }
-
-        function displayMsgs(name) { var list = document.getElementById('msgList'),
-                msgs = S.messages[name] || [];
-            list.innerHTML = ''; if (!msgs.length) { list.innerHTML = '<div style="text-align:center;color:#555;padding:30px;">' +
-                    T().noMessages + '</div>'; return; }
-            msgs.forEach(function(m) { var div = document.createElement('div');
-                div.className = 'bubble ' + (m.sender === S.user.name ? 'me' : 'other'); if (m.type === 'voice') { div
-                        .innerHTML = '🎤 Vocal ' + (m.duration || '?') + 's'; if (m.audioData) div.onclick = function() { var a =
-                            new Audio(m.audioData);
-                        a.play(); }; } else if (m.type === 'image') { div.innerHTML = '<img src="' + m.imageData +
-                        '" style="max-width:150px;border-radius:10px;">'; } else { div.innerHTML = (m.sender !== S.user
-                        .name ? '<b>' + m.sender + '</b><br>' : '') + m.text; }
-                list.appendChild(div); });
-            list.scrollTop = list.scrollHeight; }
-
-        function handleMedia(input) { S.selectedMedia = [];
-            Array.from(input.files).forEach(function(f) { var r = new FileReader();
-                r.onload = function(e) { S.selectedMedia.push({ data: e.target.result, type: f.type }); };
-                r.readAsDataURL(f); });
-            input.value = ''; }
-
-        function sendText() { bubbleSound();
-            var text = document.getElementById('textInput').value.trim(); if (!text && !S.selectedMedia.length) return; if (!S
-                .messages[S.currentChat]) S.messages[S.currentChat] = [];
-            var now = Date.now(); if (text) { var m = { id: now.toString(), type: 'text', sender: S.user.name, text: text,
-                    time: now, expiresAt: now + 86400000, read: false };
-                S.messages[S.currentChat].push(m);
-                sendWS({ type: 'text-message', text: text, messageId: m.id, to: S.currentChatPhone, userName: S.user
-                        .name }); }
-            S.selectedMedia.forEach(function(m) { var msg = { id: now.toString() + Math.random(), type: 'image', sender: S
-                        .user.name, imageData: m.data, time: now, expiresAt: now + 86400000, read: false };
-                S.messages[S.currentChat].push(msg);
-                sendWS({ type: 'image-message', imageData: m.data, messageId: msg.id, to: S.currentChatPhone, userName: S
-                        .user.name }); });
-            S.selectedMedia = [];
-            document.getElementById('textInput').value = '';
-            displayMsgs(S.currentChat);
-            renderContacts(); }
-
-        async function startPTT() { if (!S.user || !S.currentChatPhone) return;
-            S.isPTT = true;
-            beepSound(true);
-            sendWS({ type: 'ptt-start', to: S.currentChatPhone, userName: S.user.name }); try { var stream = await navigator
-                    .mediaDevices.getUserMedia({ audio: true });
-                S.mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
-                var chunks = [];
-                S.mediaRecorder.ondataavailable = function(e) { chunks.push(e.data); };
-                S.mediaRecorder.onstop = function() { var b = new Blob(chunks, { type: 'audio/webm' }),
-                        r = new FileReader();
-                    r.onloadend = function() { var audioData = r.result; if (!S.messages[S.currentChat]) S.messages[S
-                                .currentChat] = [];
-                        var m = { id: Date.now().toString(), type: 'voice', sender: S.user.name, duration: '60',
-                            audioData: audioData, time: Date.now(), expiresAt: Date.now() + 86400000, read: false };
-                        S.messages[S.currentChat].push(m);
-                        sendWS({ type: 'voice-message', audioData: audioData, messageId: m.id, duration: '60', to: S
-                                .currentChatPhone, userName: S.user.name });
-                        displayMsgs(S.currentChat);
-                        renderContacts();
-                        bubbleSound(); };
-                    r.readAsDataURL(b); };
-                S.mediaRecorder.start();
-                setTimeout(function() { if (S.mediaRecorder && S.mediaRecorder.state === 'recording') S.mediaRecorder
-                    .stop(); }, 60000); } catch (e) { toast('Micro non disponible'); }
-            stopPTT(); }
-
-        function stopPTT() { S.isPTT = false;
-            beepSound(false);
-            sendWS({ type: 'ptt-end', to: S.currentChatPhone, userName: S.user ? S.user.name : '' }); if (S.mediaRecorder && S
-                .mediaRecorder.state === 'recording') S.mediaRecorder.stop(); }
-
-        document.getElementById('textInput').addEventListener('keydown', function(e) { if (e.key === 'Enter')
-            sendText(); });
-        var ptt = document.getElementById('pttBtn');
-        ['pointerdown', 'touchstart'].forEach(function(ev) { ptt.addEventListener(ev, function(e) { e.preventDefault();
-                startPTT(); }); });
-        ['pointerup', 'pointerleave', 'touchend'].forEach(function(ev) { ptt.addEventListener(ev, function(e) { e
-                .preventDefault();
-                stopPTT(); }); });
-        updateAllTexts();
-    </script>
+var S={page:'homePage',lang:'fr',user:null,regPhoto:null,selectedCountry:COUNTRIES[0],currentChat:null,currentChatPhone:null,messages:{},contacts:[],selectedMedia:[],ws:null,isPTT:false,mediaRecorder:null,notifications:{}};
+function T(){return TRAD[S.lang];}
+var WS_URL=(location.protocol==='https:'?'wss://':'ws://')+location.host;
+function toast(m){var e=document.getElementById('toast');e.textContent=m;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(function(){e.classList.remove('show');},2000);}
+function whooshSound(){try{var c=new AudioContext(),o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(300,c.currentTime);o.frequency.exponentialRampToValueAtTime(800,c.currentTime+0.3);g.gain.setValueAtTime(0.12,c.currentTime);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+0.35);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+0.35);}catch(e){}}
+function bubbleSound(){try{var c=new AudioContext(),o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(800,c.currentTime);o.frequency.exponentialRampToValueAtTime(1200,c.currentTime+0.08);g.gain.setValueAtTime(0.1,c.currentTime);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+0.1);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+0.1);}catch(e){}}
+function bellSound(){try{var c=new AudioContext();[800,1000,1200].forEach(function(f,i){var o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(f,c.currentTime+i*0.1);g.gain.setValueAtTime(0.08,c.currentTime+i*0.1);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+i*0.15);o.connect(g);g.connect(c.destination);o.start(c.currentTime+i*0.1);o.stop(c.currentTime+i*0.15);});}catch(e){}}
+function beepSound(s){try{var c=new AudioContext(),o=c.createOscillator(),g=c.createGain();o.type='sawtooth';o.frequency.setValueAtTime(s?800:400,c.currentTime);g.gain.setValueAtTime(0.1,c.currentTime);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+0.15);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+0.15);}catch(e){}}
+function connectWS(){if(S.ws&&S.ws.readyState===WebSocket.OPEN)return;S.ws=new WebSocket(WS_URL);S.ws.onopen=function(){if(S.user)sendWS({type:'join',phone:S.user.phone,name:S.user.name});};S.ws.onmessage=function(e){try{handleWS(JSON.parse(e.data));}catch(err){}};}
+function sendWS(d){if(S.ws&&S.ws.readyState===WebSocket.OPEN)S.ws.send(JSON.stringify(d));}
+function handleWS(m){var tr=T();switch(m.type){case'register-success':S.user={phone:m.phone,name:m.name,photo:S.regPhoto||''};updateProfileUI();toast(tr.accountCreated);goTo('contactsPage');document.getElementById('homePage').style.display='none';sendWS({type:'get-contacts'});break;case'user-data':S.user={phone:m.phone,name:m.name,photo:m.photo||''};updateProfileUI();toast(tr.connected);goTo('contactsPage');document.getElementById('homePage').style.display='none';sendWS({type:'get-contacts'});break;case'contact-check':if(m.isHellosorft){sendWS({type:'get-contacts'});toast(m.userName+tr.contactAdded);}else toast(tr.notFound);break;case'contacts-list':S.contacts=m.contacts||[];renderContacts();break;case'text-message':case'image-message':case'voice-message':if(!S.messages[m.userName])S.messages[m.userName]=[];S.messages[m.userName].push({type:m.type.replace('-message',''),sender:m.userName,text:m.text,imageData:m.imageData,audioData:m.audioData,duration:m.duration,time:Date.now(),expiresAt:Date.now()+86400000});if(S.currentChat===m.userName&&S.page==='msgPage'){displayMsgs(m.userName);bubbleSound();}else{bellSound();}renderContacts();break;case'account-deleted':toast(tr.deleted);disconnect();break;case'error':toast(m.message);break;}}
+function goTo(p){document.getElementById(S.page).classList.remove('active');document.getElementById(S.page).classList.add('hidden-left');document.getElementById(p).classList.remove('hidden-left','hidden-right');document.getElementById(p).classList.add('active');S.page=p;if(p==='contactsPage')sendWS({type:'get-contacts'});}
+function setLang(l){S.lang=l;document.querySelectorAll('.lang-flag').forEach(function(f){f.classList.remove('active-lang');});document.querySelectorAll('.lang-flag[data-lang="'+l+'"]').forEach(function(f){f.classList.add('active-lang');});updateAllTexts();updateTaglines();}
+function updateAllTexts(){var tr=T();document.getElementById('btnCreate').textContent=tr.createAccount;document.getElementById('btnContinue').textContent=tr.continue;document.getElementById('btnBack').textContent=tr.back;document.getElementById('termsLabel').textContent=tr.terms;document.getElementById('searchInput').placeholder=tr.search;document.getElementById('deleteAccountBtn').textContent=tr.deleteAccount;}
+function initTaglines(){updateTaglines();setInterval(function(){updateTaglines();tagCycle=(tagCycle+1)%T().taglines.length;},6000);}
+var tagCycle=0;
+function updateTaglines(){var tr=T(),w=tr.taglines[tagCycle];document.getElementById('tagline1').textContent=w[0];document.getElementById('tagline2').textContent=w[1];document.getElementById('tagline3').textContent=w[2];}
+initTaglines();
+var si=0;setInterval(function(){var s=document.querySelectorAll('#slideshow .slide');if(s.length){s[si].classList.remove('active');si=(si+1)%s.length;s[si].classList.add('active');}},3500);
+function createBubbles(){var c=document.getElementById('floatingBubbles');for(var i=0;i<10;i++){var b=document.createElement('div');b.className='float-bubble';var size=20+Math.random()*40;b.style.width=size+'px';b.style.height=size+'px';b.style.left=Math.random()*100+'%';b.style.animationDelay=Math.random()*8+'s';b.style.animationDuration=(6+Math.random()*6)+'s';c.appendChild(b);}}
+createBubbles();
+function initCountryLists(){var lists=[document.getElementById('countryList'),document.getElementById('countryList2')];lists.forEach(function(list){if(!list)return;list.innerHTML='';COUNTRIES.forEach(function(c){var opt=document.createElement('div');opt.className='country-option';opt.textContent=c.flag+' '+c.name+' ('+c.code+')';opt.onclick=function(){S.selectedCountry=c;document.getElementById('selectedFlag').textContent=c.flag;document.getElementById('selectedCode').textContent=c.code;document.getElementById('selectedFlag2').textContent=c.flag;document.getElementById('selectedCode2').textContent=c.code;list.classList.remove('show');};list.appendChild(opt);});});}
+initCountryLists();
+function toggleCountryList(){document.getElementById('countryList').classList.toggle('show');}
+function toggleCountryList2(){document.getElementById('countryList2').classList.toggle('show');}
+function previewRegPhoto(input){if(input.files[0]){var r=new FileReader();r.onload=function(e){S.regPhoto=e.target.result;document.getElementById('regPhotoImg').src=e.target.result;document.getElementById('regPhotoImg').style.display='block';document.getElementById('regPhotoPlaceholder').style.display='none';};r.readAsDataURL(input.files[0]);}}
+function expandPanel(){whooshSound();document.getElementById('glassPanel').classList.add('expand');document.getElementById('brand').classList.add('move-down');document.getElementById('taglineContainer').classList.add('hide');document.getElementById('panelHomeButtons').classList.add('hide');document.getElementById('panelRegister').classList.remove('hide');}
+function collapsePanel(){document.getElementById('glassPanel').classList.remove('expand');document.getElementById('brand').classList.remove('move-down');document.getElementById('taglineContainer').classList.remove('hide');document.getElementById('panelHomeButtons').classList.remove('hide');document.getElementById('panelRegister').classList.add('hide');}
+function register(){var tr=T();var phone=document.getElementById('regPhone').value.trim();var fullPhone=S.selectedCountry.code+phone;if(!phone)return toast(tr.fillPhone);if(!document.getElementById('acceptTerms').checked)return toast(tr.acceptTerms);S.user={phone:fullPhone,name:fullPhone,photo:S.regPhoto||''};connectWS();var trySend=function(){if(S.ws&&S.ws.readyState===WebSocket.OPEN){sendWS({type:'register',phone:fullPhone,name:fullPhone,photo:S.regPhoto||''});document.getElementById('regPhone').value='';collapsePanel();}else setTimeout(trySend,300);};setTimeout(trySend,500);}
+function disconnect(){sendWS({type:'leave'});if(S.ws)S.ws.close();S.user=null;S.messages={};S.contacts=[];document.getElementById('homePage').style.display='';goTo('homePage');}
+function updateProfileUI(){if(!S.user)return;document.getElementById('profileThumb').textContent=(S.user.name||'?').charAt(0).toUpperCase();}
+function showProfile(){document.getElementById('profileName').textContent=S.user?S.user.name||'':'';document.getElementById('profilePhone').textContent=S.user?S.user.phone||'':'';document.getElementById('profileOverlay').classList.add('show');}
+function showEditProfile(){document.getElementById('editName').value=S.user?S.user.name||'':'';document.getElementById('editProfileOverlay').classList.add('show');}
+function saveProfile(){var name=document.getElementById('editName').value.trim();if(!name)return toast('Entrez un nom');sendWS({type:'update-profile',name:name});S.user.name=name;updateProfileUI();document.getElementById('editProfileOverlay').classList.remove('show');toast('Profil mis à jour');}
+function confirmDeleteAccount(){document.getElementById('deleteConfirmOverlay').classList.add('show');}
+function deleteAccount(){sendWS({type:'delete-account'});document.getElementById('deleteConfirmOverlay').classList.remove('show');}
+function showAddContact(){whooshSound();document.getElementById('addContactOverlay').classList.add('show');}
+function hideAddContact(){document.getElementById('addContactOverlay').classList.remove('show');}
+function addContact(){var phone=document.getElementById('newContactPhone').value.trim();if(!phone)return toast('Entrez un numéro');var fullPhone=S.selectedCountry.code+phone;sendWS({type:'check-contact',phone:fullPhone});hideAddContact();}
+function renderContacts(){var tr=T(),list=document.getElementById('contactsList');if(!S.contacts.length){list.innerHTML='<div style="text-align:center;color:#555;padding:30px;">'+tr.noContacts+'</div>';return;}list.innerHTML='';S.contacts.forEach(function(c){var div=document.createElement('div');div.className='contact-item';div.onclick=function(){openChat(c.contact_name,c.contact_phone);};div.innerHTML='<div class="contact-avatar">'+(c.contact_name||'?').charAt(0).toUpperCase()+'</div><div class="contact-name" style="flex:1;">'+c.contact_name+'</div>';list.appendChild(div);});}
+function filterContacts(){renderContacts();}
+function openChat(name,phone){S.currentChat=name;S.currentChatPhone=phone;document.getElementById('chatName').textContent=name;document.getElementById('chatAvatar').textContent=name.charAt(0).toUpperCase();displayMsgs(name);goTo('msgPage');}
+function displayMsgs(name){var list=document.getElementById('msgList'),msgs=S.messages[name]||[];list.innerHTML='';if(!msgs.length){list.innerHTML='<div style="text-align:center;color:#555;padding:30px;">'+T().noMessages+'</div>';return;}msgs.forEach(function(m){var div=document.createElement('div');div.className='bubble '+(m.sender===S.user.name?'me':'other');if(m.type==='voice'){div.innerHTML='🎤 Vocal';if(m.audioData)div.onclick=function(){var a=new Audio(m.audioData);a.play();};}else if(m.type==='image'){div.innerHTML='<img src="'+m.imageData+'" style="max-width:150px;border-radius:10px;">';}else{div.innerHTML=(m.sender!==S.user.name?'<b>'+m.sender+'</b><br>':'')+m.text;}list.appendChild(div);});list.scrollTop=list.scrollHeight;}
+function handleMedia(input){S.selectedMedia=[];Array.from(input.files).forEach(function(f){var r=new FileReader();r.onload=function(e){S.selectedMedia.push({data:e.target.result});};r.readAsDataURL(f);});input.value='';}
+function sendText(){bubbleSound();var text=document.getElementById('textInput').value.trim();if(!text&&!S.selectedMedia.length)return;if(!S.messages[S.currentChat])S.messages[S.currentChat]=[];if(text){var m={id:Date.now().toString(),type:'text',sender:S.user.name,text:text,time:Date.now(),expiresAt:Date.now()+86400000};S.messages[S.currentChat].push(m);sendWS({type:'text-message',text:text,to:S.currentChatPhone,userName:S.user.name});}S.selectedMedia.forEach(function(m){var msg={id:Date.now().toString()+Math.random(),type:'image',sender:S.user.name,imageData:m.data,time:Date.now(),expiresAt:Date.now()+86400000};S.messages[S.currentChat].push(msg);sendWS({type:'image-message',imageData:m.data,to:S.currentChatPhone,userName:S.user.name});});S.selectedMedia=[];document.getElementById('textInput').value='';displayMsgs(S.currentChat);}
+async function startPTT(){if(!S.user||!S.currentChatPhone)return;S.isPTT=true;beepSound(true);try{var stream=await navigator.mediaDevices.getUserMedia({audio:true});S.mediaRecorder=new MediaRecorder(stream,{mimeType:'audio/webm;codecs=opus'});var chunks=[];S.mediaRecorder.ondataavailable=function(e){chunks.push(e.data);};S.mediaRecorder.onstop=function(){var b=new Blob(chunks,{type:'audio/webm'}),r=new FileReader();r.onloadend=function(){var audioData=r.result;if(!S.messages[S.currentChat])S.messages[S.currentChat]=[];var m={id:Date.now().toString(),type:'voice',sender:S.user.name,duration:'60',audioData:audioData,time:Date.now(),expiresAt:Date.now()+86400000};S.messages[S.currentChat].push(m);sendWS({type:'voice-message',audioData:audioData,duration:'60',to:S.currentChatPhone,userName:S.user.name});displayMsgs(S.currentChat);bubbleSound();};r.readAsDataURL(b);};S.mediaRecorder.start();setTimeout(function(){if(S.mediaRecorder&&S.mediaRecorder.state==='recording')S.mediaRecorder.stop();},60000);}catch(e){toast('Micro non disponible');}stopPTT();}
+function stopPTT(){S.isPTT=false;beepSound(false);if(S.mediaRecorder&&S.mediaRecorder.state==='recording')S.mediaRecorder.stop();}
+document.getElementById('textInput').addEventListener('keydown',function(e){if(e.key==='Enter')sendText();});
+var ptt=document.getElementById('pttBtn');
+['pointerdown','touchstart'].forEach(function(ev){ptt.addEventListener(ev,function(e){e.preventDefault();startPTT();});});
+['pointerup','pointerleave','touchend'].forEach(function(ev){ptt.addEventListener(ev,function(e){e.preventDefault();stopPTT();});});
+updateAllTexts();
+</script>
 </body>
 </html>
